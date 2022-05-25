@@ -1,0 +1,49 @@
+---
+title: "Census"
+author: "Alaine Williams"
+date: "5/25/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#install.packages("rgdal")
+library(rgdal)
+library(tidycensus)
+#tidyverse includes a lot of helpful commands that are used often when wrangling and organzing data.
+library(tidyverse)
+#If errors of there being no rgdal package => Install rgdal and when prompted: Install package which needs compilation, I had to press no. I suspect something is out-of-date on my computer.
+```
+
+```{r Census API Key}
+#http://api.census.gov/data/key_signup.html
+#census_api_key("000138d495137edf7a469ec2b2043b4f56372358", install = T)
+
+```
+
+
+```{r calling data}
+population_state10 <- get_decennial(
+  geography = "state",
+  variables = "P001001",
+  year = 2010
+)
+```
+
+```{r finding variable names}
+names <- load_variables(2000, "sf1")
+females <- get_decennial(
+  geography = "state",
+  variables = c("P012036", "P012I012"),
+  year = 2010
+)
+```
+
+```{r arrange the data}
+population30_34 <- pivot_wider(females,
+                               names_from = "variable",
+                               values_from = "value") %>% 
+  rename(females = "P012036",
+         males = "P012I012")
+```
+
